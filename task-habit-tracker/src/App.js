@@ -1,203 +1,175 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 
-const getToday = () => new Date().toISOString().slice(0, 10);
+function App() {
+    const [tasks, setTasks] = useState(() => {
+        const saved = localStorage.getItem('tasks');
+        return saved ? JSON.parse(saved) : [];
+    });
 
-const App = () => {
-    // ---------- ЗАДАЧИ ----------
-    const [tasks, setTasks] = useState([]);
+    const [habits, setHabits] = useState(() => {
+        const saved = localStorage.getItem('habits');
+        return saved ? JSON.parse(saved) : [];
+    });
+
     const [taskTitle, setTaskTitle] = useState('');
-    const [taskDate, setTaskDate] = useState(getToday());
+    const [taskDate, setTaskDate] = useState('');
+    const [habitName, setHabitName] = useState('');
+    const [habitFrequency, setHabitFrequency] = useState('ежедневно');
 
-    useEffect(() => {
-        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        setTasks(savedTasks);
-    }, []);
-
+    // Сохранение
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
-
-    const addTask = () => {
-        if (!taskTitle.trim()) return;
-        const newTask = {
-            id: Date.now(),
-            title: taskTitle,
-            date: taskDate,
-            done: false
-        };
-        setTasks([...tasks, newTask]);
-        setTaskTitle('');
-        setTaskDate(getToday());
-    };
-
-    const toggleTask = (id) => {
-        setTasks(tasks.map(task =>
-            task.id === id ? { ...task, done: !task.done } : task
-        ));
-    };
-
-    const deleteTask = (id) => {
-        setTasks(tasks.filter(task => task.id !== id));
-    };
-
-    // ---------- ПРИВЫЧКИ ----------
-    const [habits, setHabits] = useState([]);
-    const [habitName, setHabitName] = useState('');
-
-    useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('habits')) || [];
-        setHabits(saved);
-    }, []);
 
     useEffect(() => {
         localStorage.setItem('habits', JSON.stringify(habits));
     }, [habits]);
 
+    const addTask = () => {
+        if (taskTitle.trim() === '' || taskDate.trim() === '') return;
+        const newTask = {
+            id: Date.now(),
+            title: taskTitle,
+            date: taskDate,
+            done: false,
+        };
+        setTasks([...tasks, newTask]);
+        setTaskTitle('');
+        setTaskDate('');
+    };
+
+    const deleteTask = (id) => {
+        setTasks(tasks.filter(t => t.id !== id));
+    };
+
+    const toggleTaskDone = (id) => {
+        setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
+    };
+
     const addHabit = () => {
-        if (!habitName.trim()) return;
+        if (habitName.trim() === '') return;
         const newHabit = {
             id: Date.now(),
             name: habitName,
-            frequency: 'daily',
-            history: []
+            frequency: habitFrequency,
+            count: 0, // новый счётчик
         };
         setHabits([...habits, newHabit]);
         setHabitName('');
-    };
-
-    const toggleHabit = (id) => {
-        const today = getToday();
-        setHabits(habits.map(habit => {
-            if (habit.id !== id) return habit;
-            const alreadyDone = habit.history.includes(today);
-            const newHistory = alreadyDone
-                ? habit.history.filter(date => date !== today)
-                : [...habit.history, today];
-            return { ...habit, history: newHistory };
-        }));
+        setHabitFrequency('ежедневно');
     };
 
     const deleteHabit = (id) => {
         setHabits(habits.filter(h => h.id !== id));
     };
 
-    const getStreak = (history) => {
-        const today = new Date();
-        let streak = 0;
-        for (let i = 0; i < 365; i++) {
-            const date = new Date(today);
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().slice(0, 10);
-            if (history.includes(dateStr)) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-        return streak;
+    const changeHabitCount = (id, delta) => {
+        setHabits(habits.map(h =>
+            h.id === id
+                ? { ...h, count: Math.max(0, h.count + delta) }
+                : h
+        ));
     };
 
-    return (
-        <div className="p-4 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Управление задачами и привычками</h1>
 
-            {/* === ЗАДАЧИ === */}
-            <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Задачи</h2>
-                <div className="flex mb-4 gap-2">
-                    <input
-                        type="text"
-                        placeholder="Название задачи"
-                        value={taskTitle}
-                        onChange={(e) => setTaskTitle(e.target.value)}
-                        className="border p-2 rounded flex-1"
-                    />
-                    <input
-                        type="date"
-                        value={taskDate}
-                        onChange={(e) => setTaskDate(e.target.value)}
-                        className="border p-2 rounded"
-                    />
-                    <button
-                        onClick={addTask}
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                    >
-                        Добавить
-                    </button>
+    return (
+        <div className="container">
+            <h1>PiedTracker ALPHA</h1>
+            <div className="background"></div>
+
+            <div className="card-item">
+
+                <div className="form-container">
+                    <h2>Мои задачи</h2>
+                    <div className="form">
+                        <input
+                            type="text"
+                            placeholder="Название задачи"
+                            value={taskTitle}
+                            className="input-field full-width"
+                            onChange={(e) => setTaskTitle(e.target.value)}
+                        />
+                        <div className="date-button-container">
+                            <input
+                                type="date"
+                                value={taskDate}
+                                className="input-field"
+                                onChange={(e) => setTaskDate(e.target.value)}
+                            />
+                            <button onClick={addTask} className="custom-button">
+                                Добавить
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <ul>
+                <div className="card-list">
                     {tasks.map(task => (
-                        <li key={task.id} className="flex justify-between items-center border-b py-2">
+                        <div key={task.id} className="card">
                             <div>
+                                <p className={`title ${task.done ? 'done' : ''}`}>{task.title}</p>
+                                <p className="date">{task.date}</p>
+                            </div>
+                            <div className="card-actions">
                                 <input
                                     type="checkbox"
                                     checked={task.done}
-                                    onChange={() => toggleTask(task.id)}
-                                    className="mr-2"
+                                    onChange={() => toggleTaskDone(task.id)}
                                 />
-                                <span className={task.done ? 'line-through text-gray-500' : ''}>
-                                    {task.title} ({task.date})
-                                </span>
+                                <button onClick={() => deleteTask(task.id)}>✕</button>
                             </div>
-                            <button
-                                onClick={() => deleteTask(task.id)}
-                                className="text-red-500"
-                            >
-                                Удалить
-                            </button>
-                        </li>
+                        </div>
                     ))}
-                </ul>
-            </section>
+                </div>
+            </div>
 
-            {/* === ПРИВЫЧКИ === */}
-            <section>
-                <h2 className="text-xl font-semibold mb-2">Привычки</h2>
-                <div className="flex mb-4 gap-2">
-                    <input
-                        type="text"
-                        placeholder="Новая привычка"
-                        value={habitName}
-                        onChange={(e) => setHabitName(e.target.value)}
-                        className="border p-2 rounded flex-1"
-                    />
-                    <button
-                        onClick={addHabit}
-                        className="bg-green-500 text-white px-4 py-2 rounded"
-                    >
-                        Добавить
-                    </button>
+            <div className="card-item">
+                <div className="form-container">
+                    <h2>Мои привычки</h2>
+                    <div className="form">
+                        <input
+                            type="text"
+                            placeholder="Название привычки"
+                            value={habitName}
+                            class="input-field"
+                            onChange={(e) => setHabitName(e.target.value)}
+                        />
+                        <div className="date-button-container">
+                            <select
+                                value={habitFrequency}
+                                className="custom-select"
+                                onChange={(e) => setHabitFrequency(e.target.value)}
+                            >
+                                <option value="ежедневно">Ежедневно</option>
+                                <option value="еженедельно">Еженедельно</option>
+
+                            </select>
+                            <button onClick={addHabit} className="custom-button">Добавить</button>
+                        </div>
+                    </div>
                 </div>
 
-                <ul>
-                    {habits.map(habit => {
-                        const doneToday = habit.history.includes(getToday());
-                        const streak = getStreak(habit.history);
-                        return (
-                            <li key={habit.id} className="flex justify-between items-center border-b py-2">
-                                <div>
-                                    <span
-                                        className={`cursor-pointer ${doneToday ? 'text-green-600 font-bold' : ''}`}
-                                        onClick={() => toggleHabit(habit.id)}
-                                    >
-                                        {habit.name}
-                                    </span>
-                                    <div className="text-sm text-gray-500">Стрик: {streak} дней</div>
-                                </div>
-                                <button
-                                    onClick={() => deleteHabit(habit.id)}
-                                    className="text-red-500"
-                                >
-                                    Удалить
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </section>
+                <div className="card-list">
+                    {habits.map(habit => (
+                        <div key={habit.id} className="card">
+                            <div>
+                                <p className="title">{habit.name}</p>
+                                <p className="date">Частота: {habit.frequency}</p>
+                            </div>
+                            <div className="card-actions">
+                                <button onClick={() => changeHabitCount(habit.id, -1)}>-</button>
+                                <span>{habit.count}</span>
+                                <button onClick={() => changeHabitCount(habit.id, 1)}>+</button>
+                                <button onClick={() => deleteHabit(habit.id)}>✕</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+            </div>
         </div>
     );
-};
+}
 
 export default App;
