@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/PiedTodo/static/css/main.7a0c6f90.css",
-    "main.js": "/PiedTodo/static/js/main.03cd2695.js",
-    "static/js/453.a5746cb4.chunk.js": "/PiedTodo/static/js/453.a5746cb4.chunk.js",
-    "index.html": "/PiedTodo/index.html",
-    "main.7a0c6f90.css.map": "/PiedTodo/static/css/main.7a0c6f90.css.map",
-    "main.03cd2695.js.map": "/PiedTodo/static/js/main.03cd2695.js.map",
-    "453.a5746cb4.chunk.js.map": "/PiedTodo/static/js/453.a5746cb4.chunk.js.map"
+    "main.css": "/PiedTasker/static/css/main.7a0c6f90.css",
+    "main.js": "/PiedTasker/static/js/main.a43fed80.js",
+    "static/js/453.a5746cb4.chunk.js": "/PiedTasker/static/js/453.a5746cb4.chunk.js",
+    "index.html": "/PiedTasker/index.html",
+    "main.7a0c6f90.css.map": "/PiedTasker/static/css/main.7a0c6f90.css.map",
+    "main.a43fed80.js.map": "/PiedTasker/static/js/main.a43fed80.js.map",
+    "453.a5746cb4.chunk.js.map": "/PiedTasker/static/js/453.a5746cb4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7a0c6f90.css",
-    "static/js/main.03cd2695.js"
+    "static/js/main.a43fed80.js"
   ]
 }
