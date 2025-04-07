@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/PiedTasker/static/css/main.7a0c6f90.css",
-    "main.js": "/PiedTasker/static/js/main.a43fed80.js",
-    "static/js/453.a5746cb4.chunk.js": "/PiedTasker/static/js/453.a5746cb4.chunk.js",
+    "main.js": "/PiedTasker/static/js/main.f78cbe13.js",
+    "static/js/453.872eda46.chunk.js": "/PiedTasker/static/js/453.872eda46.chunk.js",
     "index.html": "/PiedTasker/index.html",
     "main.7a0c6f90.css.map": "/PiedTasker/static/css/main.7a0c6f90.css.map",
-    "main.a43fed80.js.map": "/PiedTasker/static/js/main.a43fed80.js.map",
-    "453.a5746cb4.chunk.js.map": "/PiedTasker/static/js/453.a5746cb4.chunk.js.map"
+    "main.f78cbe13.js.map": "/PiedTasker/static/js/main.f78cbe13.js.map",
+    "453.872eda46.chunk.js.map": "/PiedTasker/static/js/453.872eda46.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7a0c6f90.css",
-    "static/js/main.a43fed80.js"
+    "static/js/main.f78cbe13.js"
   ]
 }
