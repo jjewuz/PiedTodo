@@ -1,6 +1,6 @@
 {
   "homepage": "https://jjewuz.github.io/PiedTasker",
-  "name": "task-habit-tracker",
+  "name": "piedtasker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
