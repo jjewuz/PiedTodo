@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchTasks, addTask as apiAddTask, deleteTask as apiDeleteTask } from './api';
 import './App.css';
 
 function App() {
@@ -18,30 +19,38 @@ function App() {
     const [habitFrequency, setHabitFrequency] = useState('ежедневно');
 
     // Сохранение
-    useEffect(() => {
+    /*useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
 
     useEffect(() => {
         localStorage.setItem('habits', JSON.stringify(habits));
-    }, [habits]);
+    }, [habits]);*/
 
-    const addTask = () => {
+    useEffect(() => {
+        fetchTasks().then(setTasks);
+    }, []);
+
+
+    const addTask = async () => {
         if (taskTitle.trim() === '' || taskDate.trim() === '') return;
         const newTask = {
-            id: Date.now(),
             title: taskTitle,
             date: taskDate,
             done: false,
         };
-        setTasks([...tasks, newTask]);
+        const createdTask = await apiAddTask(newTask);
+        setTasks([...tasks, createdTask]);
         setTaskTitle('');
         setTaskDate('');
     };
 
-    const deleteTask = (id) => {
+
+    const deleteTask = async (id) => {
+        await apiDeleteTask(id);
         setTasks(tasks.filter(t => t.id !== id));
     };
+
 
     const toggleTaskDone = (id) => {
         setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
