@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { sendDataToBackend } from './api';
+import { LoginButton } from '@telegram-auth/react';
 
 function App() {
     const userId = 'user-1234';
@@ -112,6 +114,16 @@ function App() {
     return (
         <div className="container">
             <h1>PiedTracker ALPHA</h1>
+            <div className="background"></div>
+
+            <div className="tg-login-button">
+                <LoginButton
+                    botUsername={process.env.REACT_APP_BOT_USERNAME}
+                    onAuthCallback={(data) => {
+                        console.log(data); //TODO Передаём дату в бек и там обрабатываем
+                    }}
+                />
+            </div>
 
             <div className="card-item">
                 <div className="form-container">
