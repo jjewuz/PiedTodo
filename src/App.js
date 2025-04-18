@@ -1,94 +1,119 @@
 import React, { useState, useEffect } from 'react';
-import { fetchTasks, addTask as apiAddTask, deleteTask as apiDeleteTask } from './api';
 import './App.css';
 
 function App() {
-    const [tasks, setTasks] = useState(() => {
-        const saved = localStorage.getItem('tasks');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const userId = 'user-1234';
 
-    const [habits, setHabits] = useState(() => {
-        const saved = localStorage.getItem('habits');
-        return saved ? JSON.parse(saved) : [];
-    });
-
+    const [tasks, setTasks] = useState([]);
+    const [habits, setHabits] = useState([]);
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDate, setTaskDate] = useState('');
     const [habitName, setHabitName] = useState('');
     const [habitFrequency, setHabitFrequency] = useState('ежедневно');
 
-    // Сохранение
-    /*useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
-
     useEffect(() => {
-        localStorage.setItem('habits', JSON.stringify(habits));
-    }, [habits]);*/
+        fetch(`https://justnotes.xyz/api/tasks?userId=${userId}`)
+            .then(res => res.json())
+            .then(setTasks);
 
-    useEffect(() => {
-        fetchTasks().then(setTasks);
+        fetch(`https://justnotes.xyz/api/habits?userId=${userId}`)
+            .then(res => res.json())
+            .then(setHabits);
     }, []);
 
-
-    const addTask = async () => {
+    const addTask = () => {
         if (taskTitle.trim() === '' || taskDate.trim() === '') return;
+
         const newTask = {
+            userId,
             title: taskTitle,
             date: taskDate,
-            done: false,
+            done: false
         };
-        const createdTask = await apiAddTask(newTask);
-        setTasks([...tasks, createdTask]);
-        setTaskTitle('');
-        setTaskDate('');
+
+        fetch('https://justnotes.xyz/api/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newTask)
+        })
+            .then(res => res.json())
+            .then(task => {
+                setTasks([...tasks, task]);
+                setTaskTitle('');
+                setTaskDate('');
+            });
     };
 
-
-    const deleteTask = async (id) => {
-        await apiDeleteTask(id);
-        setTasks(tasks.filter(t => t.id !== id));
+    const deleteTask = (id) => {
+        fetch(`https://justnotes.xyz/api/tasks/${id}`, {
+            method: 'DELETE'
+        }).then(() => {
+            setTasks(tasks.filter(t => t.id !== id));
+        });
     };
-
 
     const toggleTaskDone = (id) => {
-        setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
+        const task = tasks.find(t => t.id === id);
+        const updated = { ...task, done: !task.done };
+
+        fetch(`https://justnotes.xyz/api/tasks/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+        }).then(() => {
+            setTasks(tasks.map(t => t.id === id ? updated : t));
+        });
     };
 
     const addHabit = () => {
         if (habitName.trim() === '') return;
+
         const newHabit = {
-            id: Date.now(),
+            userId,
             name: habitName,
             frequency: habitFrequency,
-            count: 0, // новый счётчик
+            count: 0
         };
-        setHabits([...habits, newHabit]);
-        setHabitName('');
-        setHabitFrequency('ежедневно');
+
+        fetch('https://justnotes.xyz/api/habits', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newHabit)
+        })
+            .then(res => res.json())
+            .then(habit => {
+                setHabits([...habits, habit]);
+                setHabitName('');
+                setHabitFrequency('ежедневно');
+            });
     };
 
     const deleteHabit = (id) => {
-        setHabits(habits.filter(h => h.id !== id));
+        fetch(`https://justnotes.xyz/api/habits/${id}`, {
+            method: 'DELETE'
+        }).then(() => {
+            setHabits(habits.filter(h => h.id !== id));
+        });
     };
 
     const changeHabitCount = (id, delta) => {
-        setHabits(habits.map(h =>
-            h.id === id
-                ? { ...h, count: Math.max(0, h.count + delta) }
-                : h
-        ));
-    };
+        const habit = habits.find(h => h.id === id);
+        const updated = { ...habit, count: Math.max(0, habit.count + delta) };
 
+        fetch(`https://justnotes.xyz/api/habits/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+        }).then(() => {
+            setHabits(habits.map(h => h.id === id ? updated : h));
+        });
+    };
 
     return (
         <div className="container">
             <h1>PiedTracker ALPHA</h1>
-            <div className="background"></div>
 
             <div className="card-item">
-
                 <div className="form-container">
                     <h2>Мои задачи</h2>
                     <div className="form">
@@ -141,7 +166,7 @@ function App() {
                             type="text"
                             placeholder="Название привычки"
                             value={habitName}
-                            class="input-field"
+                            className="input-field"
                             onChange={(e) => setHabitName(e.target.value)}
                         />
                         <div className="date-button-container">
@@ -152,7 +177,6 @@ function App() {
                             >
                                 <option value="ежедневно">Ежедневно</option>
                                 <option value="еженедельно">Еженедельно</option>
-
                             </select>
                             <button onClick={addHabit} className="custom-button">Добавить</button>
                         </div>
@@ -175,7 +199,6 @@ function App() {
                         </div>
                     ))}
                 </div>
-
             </div>
         </div>
     );
