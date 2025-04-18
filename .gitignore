@@ -26,3 +26,4 @@ yarn-error.log*
 #backend
 /backend/bin/*
 /backend/obj/*
+/backend/.vs

@@ -1,24 +1,21 @@
-const API_URL = 'http://localhost:5090/api/data'; // Убедитесь, что порт совпадает
+const API_URL = "https://localhost:5001/api"; // поменяй порт, если другой
 
-export const sendDataToBackend = async (data) => {
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', // Указываем, что отправляем JSON
-            },
-            body: JSON.stringify(data), // Преобразуем данные в JSON
-        });
+export async function fetchTasks() {
+    const res = await fetch(`${API_URL}/tasks`);
+    return res.json();
+}
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
+export async function addTask(task) {
+    const res = await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task),
+    });
+    return res.json();
+}
 
-        const result = await response.json(); // Получаем ответ от сервера
-        console.log('Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error sending data:', error);
-        throw error;
-    }
-};
+export async function deleteTask(id) {
+    await fetch(`${API_URL}/tasks/${id}`, {
+        method: "DELETE",
+    });
+}
