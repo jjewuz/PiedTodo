@@ -310,3 +310,9 @@ input[type="checkbox"] {
 .date-button-container .input-field {
   flex: 1;
 }
+
+.tg-login-button {
+  position: absolute;
+  top: 6%;
+  left: 71%;
+}

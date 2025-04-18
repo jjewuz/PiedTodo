@@ -5,6 +5,7 @@
   "private": true,
   "proxy": "http://localhost:5090",
   "dependencies": {
+    "@telegram-auth/react": "^1.0.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
