@@ -114,6 +114,7 @@ function App() {
     return (
         <div className="container">
             <h1>PiedTracker ALPHA</h1>
+            <div className="background"></div>
 
             <div className="tg-login-button">
                 <LoginButton

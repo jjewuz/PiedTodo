@@ -5,7 +5,7 @@
   "private": true,
   "options": {
     "allowedHosts": ["localhost", ".localhost"],
-    "proxy": "http://localhost:5090/"
+    "proxy": "http://localhost:5298/"
   },
   "dependencies": {
     "@telegram-auth/react": "^1.0.4",

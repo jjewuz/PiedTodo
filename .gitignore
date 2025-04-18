@@ -27,3 +27,5 @@ yarn-error.log*
 /backend/bin/*
 /backend/obj/*
 /backend/.vs
+/TaskHabitApi/bin
+/TaskHabitApi/obj
