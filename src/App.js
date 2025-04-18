@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { sendDataToBackend } from './api';
 
 function App() {
     const [tasks, setTasks] = useState(() => {
@@ -37,6 +38,12 @@ function App() {
         setTasks([...tasks, newTask]);
         setTaskTitle('');
         setTaskDate('');
+        try {
+            sendDataToBackend(newTask);
+            alert('Data saved successfully!');
+        } catch (error) {
+            alert('Failed to save data.');
+        }
     };
 
     const deleteTask = (id) => {
@@ -71,7 +78,6 @@ function App() {
                 : h
         ));
     };
-
 
     return (
         <div className="container">
