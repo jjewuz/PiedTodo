@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { useNavigate } from "react-router";
 
 function App() {
+    let navigate = useNavigate();
+    
+    const userId = localStorage.getItem("tg_id");
+    useEffect(() => {
+        console.log(userId);
+        if (userId == null)
+        {
+            navigate("/login");
+        }
+    });
     const [tasks, setTasks] = useState([]);
     const [habits, setHabits] = useState([]);
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDate, setTaskDate] = useState('');
     const [habitName, setHabitName] = useState('');
     const [habitFrequency, setHabitFrequency] = useState('ежедневно');
-
-    const userId = localStorage.getItem("tg_id");
 
     useEffect(() => {
         fetch(`https://justnotes.xyz/api/tasks?userId=${userId}`)
