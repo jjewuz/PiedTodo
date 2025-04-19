@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TaskHabitApi.Controllers;
 using TaskHabitApi.Models;
 
 var filePath = Path.GetFullPath("../.env");
@@ -19,8 +18,6 @@ if (File.Exists(filePath))
     }
 }
 
-var tgBot = new BotContoller();
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -28,7 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = "server=localhost;database=library;user=user;password=password";
+    var connectionString = $"server=localhost;database={Environment.GetEnvironmentVariable("REACT_APP_DATABASE_NAME")};" +
+        $"user={Environment.GetEnvironmentVariable("REACT_APP_DATABASE_USER")};password={Environment.GetEnvironmentVariable("REACT_APP_DATABASE_PASSWORD")}";
     options.UseMySQL(connectionString);
 });
 

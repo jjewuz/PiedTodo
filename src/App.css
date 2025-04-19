@@ -313,6 +313,6 @@ input[type="checkbox"] {
 
 .tg-login-button {
   position: absolute;
-  top: 6%;
-  left: 71%;
+  top: 50%;
+  left: 50%;
 }
